@@ -1,0 +1,65 @@
+READ ME
+
+Rayyan Faisal, 501196760
+
+    Brief Summary: 
+
+		In this lab, we focused on the Towers of Hanoi algorithm along with gaining an understanding
+        of stdout and stderr. In the first part of the lab, we were to answer different questions 
+        based on the 'towers' function and its output using different paramaters. In the second
+        part of the lab, we modified the 'main' function so that the program would work with different
+        amounts of command line arguments and detect incorrect invocation. Everything works.
+
+    Question: 
+
+        Suppose that towers(5, 2, 3) is invoked. 
+        1. How will the first recursive call to towers() be invoked? Answer this 
+        question in the form: towers(x, y, z) where you give the actual values to the 
+        three parameters. 
+
+            Answer: The first recursive call will be invoked in line 21 as towers(4, 2, 1). 
+            Where 'n - 1' = 4 , 'from' = 2 and 'spare' = 1.
+
+        2. How many recursive calls to towers() will be made before this first recursive 
+        call actually returns to the initial invocation? 
+
+            Answer: We can derive a formula by testing the program with different amounts of 
+            disks. The initial invocation will repeat after 1, 3, 7, 15 and 31 recursive calls 
+            for 1, 2, 3, 4 and 5 disks, respectively. Therefore we can conclude that the initial 
+            invocation in the towers of hanoi algorithm will repeat after every 2^n - 1, where 
+            n is the number of disks being moved. In this case, n = 4 so 2^4 - 1 = 15. Therefore
+            it will repeat after 15 recursive calls.
+
+        3. Once towers(5, 2, 3) has invoked its first recursive call to towers() and this 
+        invocation has returned, what will be printed to stdout? (i.e. What actual 
+        move will be made by towers(5, 2, 3) ?) 
+            
+            Answer: After the first recursive call, a disk will be moved from tower 2 to tower 3.
+            Therefor stdout will then display '2 3'.
+
+        4. How will the second recursive call to towers() be invoked? Answer this 
+        question in the form: towers(x, y, z) where you give the actual values to the 
+        three parameters.
+
+            Answer: The second recursive call will be invoked in line 24 as towers(4, 1, 3).
+            Where 'n - 1' = 4 , 'spare' = 1 and 'dest' = 3.
+
+    Question: 
+
+        Suppose that towers(8, 1, 2) is invoked. How many lines will be printed to stdout? 
+        Note 
+        • You should note (or try to convince yourself) that the number of lines printed to stdout is 
+        precisely equal to the number of moves required to solve the problem. 
+        • You can use the theoretical analysis of the problem to determine the number of moves. 
+        • The towers command behaves somewhat differently than what has been described so far. In 
+        particular, if it is invoked with an argument, it will move the specified number of disks from 
+        Tower 1 to Tower 2. For example, towers 10 will output the actions to move 10 disks. 
+        • Of course, you can redirect the moves to a file and then count the number of lines in the 
+        file, allowing you to use the software to verify your theoretical answer. 
+        • Instead of counting the lines manually, you can use the Unix command wc -l someFile to do the 
+        work for you.
+
+            Answer: Theoretically, using the formula derived earlier we can conclude that there will be
+            2^n - 1 lines printed to stdout. In this case, 'n' = 8, so 2^8 - 1 = 255 lines will be printed
+            to stdout. We can confirm this by running the program using the 'towers 8' command and view
+            the number of moves, which is indeed 255.
