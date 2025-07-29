@@ -1,0 +1,190 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+typedef struct state {
+
+  /*A F C
+    B D G
+    C C H
+    D C G
+    E B A
+    F A D
+    G E F
+    H B E*/
+  //Your starting state is: C
+
+    char name;
+    struct state *nextState0;
+    struct state *nextState1;
+    int visited;
+    int deleted;
+} State;
+
+State states[8];
+
+void initializeStates() {
+
+    states[0].nextState0 = &states[5]; // A -> F
+    states[0].nextState1 = &states[2]; // A -> C
+    states[1].nextState0 = &states[3]; // B -> D
+    states[1].nextState1 = &states[6]; // B -> G
+    states[2].nextState0 = &states[2]; // C -> C
+    states[2].nextState1 = &states[7]; // C -> H
+    states[3].nextState0 = &states[2]; // D -> C
+    states[3].nextState1 = &states[6]; // D -> G
+    states[4].nextState0 = &states[1]; // E -> B
+    states[4].nextState1 = &states[0]; // E -> A
+    states[5].nextState0 = &states[0]; // F -> A
+    states[5].nextState1 = &states[3]; // F -> D
+    states[6].nextState0 = &states[4]; // G -> E
+    states[6].nextState1 = &states[5]; // G -> F
+    states[7].nextState0 = &states[1]; // H -> B
+    states[7].nextState1 = &states[4]; // H -> E
+
+    for (int i = 0; i < 8; i++) {
+        states[i].name = 'A' + i;
+        states[i].deleted = 0;
+    }
+}
+
+void markReachable(State *s) {
+    if (s && !s -> visited && !s -> deleted) {
+        s -> visited = 1;
+        markReachable(s->nextState0);
+        markReachable(s->nextState1);
+    }
+}
+
+
+void printStateMachine() {
+    for (int i = 0; i < 8; i++) {
+        if (!states[i].deleted) {
+            printf("%c %c %c\n", 
+                   states[i].name, 
+                   states[i].nextState0->name, 
+                   states[i].nextState1->name);
+        }
+    }
+}
+
+void changeState(char stateName, char inputChar, char newState) {
+    int stateIndex = stateName - 'A';
+    int newStateIndex = newState - 'A';
+
+    if (inputChar == '0') {
+        states[stateIndex].nextState0 = &states[newStateIndex];
+    } else if (inputChar == '1') {
+        states[stateIndex].nextState1 = &states[newStateIndex];
+    }
+}
+
+void deleteState(char stateName) {
+    int i = stateName - 'A';
+    if (!states[i].visited && !states[i].deleted) {
+        states[i].deleted = 1;
+        printf("Deleted.\n");
+    } else {
+        printf("Not deleted.\n");
+    }
+}
+
+void deleteUnreachableStates() {
+    for (int i = 0; i < 8; i++) {
+        states[i].visited = 0;
+    }
+
+    markReachable(&states[2]);
+
+    int anyDeleted = 0;
+    for (int i = 0; i < 8; i++) {
+        if (!states[i].visited && !states[i].deleted) {
+            deleteState(states[i].name);
+            anyDeleted = 1;
+        }
+    }
+
+    if (anyDeleted) {
+        printf("Deleted: ");
+        for (int i = 0; i < 8; i++) {
+            if (states[i].deleted) {
+                printf("%c ", states[i].name);
+            }
+        }
+        printf("\n");
+    } else {
+        printf("No states deleted.\n");
+    }
+}
+
+void garbageCollection() {
+    int garbage = 0;
+
+    for (int i = 0; i < 8; i++) {
+        states[i].visited = 0;
+    }
+
+    markReachable(&states[2]);
+
+    printf("Garbage: ");
+    for (int i = 0; i < 8; i++) {
+        if (!states[i].visited && !states[i].deleted) {
+            printf("%c ", states[i].name);
+            garbage = 1;
+        }
+    }
+
+    if (!garbage) {
+        printf("No garbage collected");
+    }
+    printf("\n");
+}
+
+
+int main() {
+    initializeStates();
+    State *currentState = &states[2];
+    printf("Current state: %c\n", currentState->name);
+    char command, inputChar, newState;
+    while (scanf(" %c", &command)) {
+        switch (command) {
+            case '0':
+                if (!currentState->deleted) {
+                    currentState = currentState->nextState0;
+                    printf("Current state: %c\n", currentState->name);
+                } else {
+                    printf("Current state is deleted.\n");
+                }
+                break;
+            case '1':
+                if (!currentState->deleted) {
+                    currentState = currentState->nextState1;
+                    printf("Current state: %c\n", currentState->name);
+                } else {
+                    printf("Current state is deleted.\n");
+                }
+                break;
+            case 'c':
+                scanf(" %c %c", &inputChar, &newState);
+                changeState(currentState->name, inputChar, newState);
+                break;
+            case 'g':
+                garbageCollection();
+                break;
+            case 'p':
+                printStateMachine();
+                break;
+            case 'd':
+                ;char nextChar = getchar();
+                if (nextChar == '\n' || nextChar == ' ') {
+                    deleteUnreachableStates();
+                } else if (nextChar >= 'A' && nextChar <= 'H') {
+                    getchar();
+                    markReachable(&states[2]);
+                    deleteState(nextChar);
+                }
+                break;
+        }
+    }
+
+    return 0;
+}
