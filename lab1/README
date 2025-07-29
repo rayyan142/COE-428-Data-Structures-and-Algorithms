@@ -1,0 +1,29 @@
+READ ME
+
+Rayyan Faisal, 501196760
+
+	Brief Summary: 
+
+		In this lab, we focused on reviewing C as well as familiarizing ourselves with the terminal and command line arguments. 
+		In the first part of the lab, we implemented a function that conisted of a sorting algorithm. In the second 
+		part of the lab, we implemented a new main method which was used to sort a user inputted array of command line 
+		arguments. Everything works.
+
+	Question: 
+
+		Suppose you were given an object module (with no access to source code) that sorted an array of integers very 
+		efficiently. However, the sort function in the object module must be invoked with the following signature: 
+		betterSort(int data[], first, last); where the array to sort is data and the parameters first and last give the 
+		indices of the portion of the array that is to be sorted. How could you write a mySort() function with the signature 
+		used in this lab that could exploit the better sorting function in the supplied object module? 
+
+	Answer:
+
+		void mySort(int d[], unsigned int n) {
+			betterSort(d, 0, n - 1);
+		}
+
+		This modification to the mySort function calls the betterSort function which is meant to be a more efficient sorting 
+		algorithm. The betterSort function takes three parameters, an array of integers, aswell as the first index and last 
+		index which determine which part of the array will be sorted.
+
